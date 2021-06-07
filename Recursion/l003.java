@@ -134,6 +134,33 @@ public class l003 {
         count += findTargetSumWays(nums, idx + 1, S + nums[idx]);
         return count;
     }
+
+
+    // To check Knights tour min moves from source to destination
+    public static int minMoves(int n, int sr, int sc, int er, int ec, int[][] dir, boolean[][] vis, int[][] dp){
+        if(sr == er && sc == ec) return dp[sr][sc] = 1;
+        if(dp[sr][sc] != 0) return dp[sr][sc];
+        vis[sr][sc] = true;
+        int res = 0;
+        for(int i = 0; i < dir.length; i++) {
+            int r = sr + dir[i][0];
+            int c = sc + dir[i][1];
+            if(r >= 0 && c >= 0 && r < n && c < n && !vis[r][c]){
+                int currMoves = 1 + minMoves(n, r, c, er, ec, dir, vis, dp);
+                res = Math.min(res, currMoves); 
+            }
+        }
+        vis[sr][sc] = false;
+        return dp[sr][sc] = res;
+    }
+    
+    public static int minMoves(int n, int startRow, int startCol, int endRow, int endCol) {
+       boolean[][] vis =  new boolean[n][n];
+       int[][] dir = {{1,2},{2,1},{-1,-2},{-2,-1},{-1,2},{2,-1},{1,-2},{-2,1}};
+       int[][] dp = new int[n][n];
+       return minMoves(n, startRow, startCol, endRow, endCol, dir, vis, dp);
+    
+    }
     
 
     public static void main(String[] args){
