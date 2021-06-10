@@ -1,4 +1,3 @@
-
 public class questions {
 
     // May 29, 2021
@@ -480,43 +479,31 @@ public class questions {
         if(head == null || head.next == null) return null;
         ListNode slow = head;
         ListNode fast = head;
-        while(fast.next != null && fast.next.next != null) {
+        while(fast != null && fast.next != null) {
             fast = fast.next.next;
             slow = slow.next;
             if(fast == slow) break;
         }
         if(fast != slow) return null;
         ListNode meetingNode = fast;
-        int a = 1, b = 0, c = 0, bc = 0, nDash = 0, n = 0; // bc is b + c
+        int a = 0, b = 0, c = 0, bc = 0, nDash = 0, n = 0; // bc is b + c
         slow = head;
-        int count = 0;
-        boolean isLoopRun = false;
         while(slow != fast){
             slow = slow.next;
             fast = fast.next;
-            if(nDash == 0 && fast == meetingNode) bc = count;
             if(fast == meetingNode) nDash++;
             a++;
-            count++;
-            isLoopRun = true;
         } 
-        if(!isLoopRun){
+        fast = meetingNode;
+        fast = fast.next;
+        bc = 1;
+        while(fast != meetingNode) {
             fast = fast.next;
-            bc = 1;
-            while(fast != slow){
-                slow = slow.next;
-                fast = fast.next;
-                bc++;
-            }
-            a = 0;
-            b = bc;
-            c = 0;
-            n = nDash = 0;
-        } else {
-            n = nDash + 1;
-            c = a - bc * nDash;
-            b = bc - c;
+            bc++;
         }
+        n = nDash + 1;
+        c = a - bc * nDash;
+        b = bc - c;
         System.out.println("Length of tail is : " + a);
         System.out.println("Length of b is : " + b);
         System.out.println("Length of c is : " + c);
@@ -554,6 +541,201 @@ public class questions {
         ListNode res = detectCycle(headA);
         tail.next = null;
         return res;
+    }
+
+    // June 6, 2021
+
+    // Intersection using difference method
+    public static int length(ListNode head) {
+        ListNode curr = head;
+        int len = 0;
+        while(curr != null) {
+            len++;
+            curr = curr.next;
+        }
+
+        return len;
+    }
+    
+    public static ListNode IntersectionNodeInTwoLLDiff(ListNode headA, ListNode headB) {
+        if(headA == null || headB == null) return null;
+        int lenA = length(headA);
+        int lenB = length(headB);
+        ListNode smallerList = (lenA < lenB ? headA : headB);
+        ListNode biggerList = (lenA > lenB ? headA : headB);
+        int diff = Math.abs(lenA - lenB);
+        while(diff-- > 0) biggerList = biggerList.next;
+        while(biggerList != smallerList){
+            biggerList = biggerList.next;
+            smallerList = smallerList.next;
+        }
+        return biggerList;
+    }
+
+    // Reverse nodes in k groups
+    // Leetcode 25 - https://leetcode.com/problems/reverse-nodes-in-k-group/
+    static ListNode th = null, tt = null;
+    public static void addFirstNode(ListNode node) {
+        if(th == null) th = tt = node;
+        else {
+            node.next = th;
+            th = node;
+        }
+    }
+    public static ListNode reverseKGroup(ListNode head, int k) {
+        if(head.next == null || k <= 1) return head;
+        int len = length(head);
+        ListNode curr = head, ph = null, pt = null;
+        while(curr != null && len >= k){
+            int itr = k;
+            while(itr-- > 0){
+                ListNode forw = curr.next;
+                curr.next = null;
+                addFirstNode(curr);
+                curr = forw;
+            }
+            if(ph == null) {
+                ph = th;
+                pt = tt;
+            } else {
+                pt.next = th;
+                pt = tt;
+            }
+            th = tt = null;
+            len -= k;
+        }
+        pt.next = curr;
+        return ph;
+    }
+
+    // Reverse in range
+    // Leetcode 92 - https://leetcode.com/problems/reverse-linked-list-ii/
+    public static ListNode reverseBetween(ListNode head, int m, int n) {
+        if(head == null || head.next == null) return head;
+        int itr = 1;
+        ListNode curr = head, prev = null;
+        while(curr != null){
+            while(itr >= m && itr <= n){
+                ListNode forw = curr.next;
+                curr.next = null;
+                addFirstNode(curr);
+                curr = forw;
+                itr++;
+            }
+            if(itr > n){
+                if(prev == null){
+                    tt.next = curr;
+                    return th;
+                } else {
+                    prev.next = th;
+                    tt.next = curr;
+                    return head;
+                }
+            }
+            prev = curr;
+            curr = curr.next;
+            itr++;
+        }
+       return null; 
+    }
+
+    // Remove duplicates in sorted LL
+    // Leetcode 83:  https://leetcode.com/problems/remove-duplicates-from-sorted-list/ 
+    // Input:  1 --> 1 --> 1 --> 4 --> 5 --> 6 --> 6 --> 7 --> 8 --> 9 --> 9 --> 9 --> null 
+    // Output: 1 --> 4 --> 5 --> 6 --> 7 --> 8 --> 9 --> null 
+    public static ListNode removeDuplicates(ListNode head) {
+        if(head == null || head.next == null) return head;
+        ListNode dummy = new ListNode(Integer.MIN_VALUE);
+        ListNode prev = dummy, curr = head;
+        while(curr != null) {
+            if(prev.val != curr.val) {
+                prev.next = curr;
+                prev = curr;
+                curr = curr.next;
+            } else {
+                ListNode forw = curr.next;
+                curr.next = null;
+                curr = forw;
+            }
+        }
+        prev.next = curr;
+        return dummy.next;
+    }
+
+    // Remove all duplicates in sorted LL
+    // Leetcode 82:  https://leetcode.com/problems/remove-duplicates-from-sorted-list-ii/ 
+    // Input:  1 --> 1 --> 1 --> 4 --> 5 --> 6 --> 6 --> 7 --> 8 --> 9 --> 9 --> 9 --> null 
+    // Output: 4 --> 5 --> 7 --> 8 --> null 
+    public static ListNode removeAllDuplicates(ListNode head) {
+        if (head == null || head.next == null) return head;
+        ListNode dummy = new ListNode(-1);
+        ListNode curr = head.next, prev = dummy;
+        prev.next = head;
+        while (curr != null) {
+            boolean isLoopRun = false;
+            while (curr != null && curr.val == prev.next.val) {
+                ListNode forw = curr.next;
+                curr.next = null;
+                curr = forw;
+                isLoopRun = true;
+            }
+            if (isLoopRun) prev.next = curr;
+            else {
+                prev = prev.next;
+                prev.next = curr;
+            }
+            if (curr != null) curr = curr.next;
+        }
+        return dummy.next;
+    }
+
+    // Copy List with Random Pointer
+    // Leetcode 138 - https://leetcode.com/problems/copy-list-with-random-pointer/ 
+    private class Node {
+        int val;
+        Node next;
+        Node random;
+        public Node(int val) {
+            this.val = val;
+            this.next = null;
+            this.random = null;
+        }
+    }
+    public void copyNodes(Node head) {
+        Node curr = head;
+        while (curr != null) {
+            Node forw = curr.next;
+            Node newNode = new Node(curr.val);
+            curr.next = newNode;
+            newNode.next = forw;
+            curr = forw;
+        }
+    }
+    public void copyRandom(Node head) {
+        Node curr = head;
+        while (curr != null) {
+            if (curr.random != null)
+                curr.next.random = curr.random.next;
+
+            curr = curr.next.next;
+        }
+    }
+    public Node extractList(Node head) {
+        Node dummy = new Node(-1);
+        Node curr = head, prev = dummy;
+        while (curr != null) {
+            prev.next = curr.next;
+            prev = prev.next;
+
+            curr.next = curr.next.next;
+            curr = curr.next;
+        }
+        return dummy.next;
+    }
+    public Node copyRandomList(Node head) {
+        copyNodes(head);
+        copyRandom(head);
+        return extractList(head);
     }
 
 }
