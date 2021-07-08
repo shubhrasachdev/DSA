@@ -32,13 +32,13 @@ public class doublyLinkedList {
         return false;
     }
 
-    private boolean indexIsInvalidException(int index, int leftRange, int rightRange) {
-        if (index < leftRange || index > rightRange) {
-            System.out.print("IndexIsInValid: ");
-            return true;
-        }
-        return false;
-    }
+    // private boolean indexIsInvalidException(int index, int leftRange, int rightRange) {
+    //     if (index < leftRange || index > rightRange) {
+    //         System.out.print("IndexIsInValid: ");
+    //         return true;
+    //     }
+    //     return false;
+    // }
 
     // Add Functions =========================================================
 
