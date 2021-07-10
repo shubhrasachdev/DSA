@@ -139,6 +139,72 @@ public class dfsQues {
         return res;
     }
 
+    // July 8, 2021
+    
+    // Lintcode 860 - https://www.lintcode.com/problem/number-of-distinct-islands/
+    public String dfs_distinctIslands(int[][] grid, int i, int j, int[][] dir, String[] dirS) {
+        grid[i][j] = 2;
+        String path = "";
+        for(int d = 0; d < dir.length; d++) {
+            int r = i + dir[d][0];
+            int c = j + dir[d][1];
+            if(r >= 0 && c >= 0 && r < grid.length && c < grid[0].length && grid[r][c] == 1) {
+                path += dirS[d] + dfs_distinctIslands(grid, r, c, dir, dirS) + "b";
+            }
+        }
+        return path;
+    }
+
+    public int numberofDistinctIslands(int[][] grid) {
+        int n = grid.length, m = grid[0].length;
+        int[][] dir = {{0,1}, {1,0}, {0,-1}, {-1,0}};
+        String[] dirS = {"R", "D", "L", "U"};
+        HashSet<String> islands = new HashSet<>();
+        for(int i = 0; i < n; i++) {
+            for(int j = 0; j < m; j++) {
+                if(grid[i][j] == 1){
+                    String path = dfs_distinctIslands(grid, i, j, dir, dirS);
+                    if(!islands.contains(path)) islands.add(path);                }
+            }
+        }
+        for(int i = 0; i < n; i++) {
+            for(int j = 0; j < m; j++) {
+                if(grid[i][j] == 2) grid[i][j] = 1;
+            }
+        }
+        return islands.size();
+    }
+
+    // Leetcode 1905 - https://leetcode.com/problems/count-sub-islands/
+    public boolean dfs_countSubIslands(int[][] grid1, int[][] grid2, int i, int j, int[][] dir) {
+        boolean res = grid1[i][j] == 1;
+        grid2[i][j] = 0;
+        for(int d = 0; d < dir.length; d++) {
+            int r = i + dir[d][0];
+            int c = j + dir[d][1];
+            if(r >= 0 && c >= 0 && r < grid2.length && c < grid2[0].length && grid2[r][c] == 1) {
+                res = dfs_countSubIslands(grid1, grid2, r, c, dir) && res; 
+                // res && will be incorrect because then subsequent calls will be ignored,
+                // which we need to make to mark all connected cells of the island zero.
+            }
+        }
+        return res;        
+    }
+
+    public int countSubIslands(int[][] grid1, int[][] grid2) {
+        int n = grid1.length, m = grid1[0].length;
+        int[][] dir = {{0,1}, {1,0}, {0,-1}, {-1,0}};
+        int count = 0;
+        for(int i = 0; i < n; i++) {
+            for(int j = 0; j < m; j++) {
+                boolean res = false;
+                if(grid2[i][j] == 1) res = dfs_countSubIslands(grid1, grid2, i, j, dir);
+                if(res) count++;
+            }
+        }
+        return count;    
+    }
+
 
 
     

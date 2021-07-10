@@ -1,4 +1,5 @@
 import java.util.ArrayList;
+import java.util.LinkedList;
 
 public class l001{
     public static class Edge {
@@ -99,6 +100,62 @@ public class l001{
         vis[src] = true;
         for(Edge e: graph[src]){
             if(!vis[e.v]) dfs_GCC(graph, e.v, vis);
+        }
+    }
+
+    // July 8, 2021
+
+    // O(E)
+    public static boolean BFS_ForCycle(ArrayList<Edge>[] graph, int src, boolean[] vis) {
+        LinkedList<Integer> que = new LinkedList<>();
+        int level = 0;
+        boolean cycle = false;
+        que.add(src);
+        vis[src] = true;
+        while(que.size() != 0) {
+            int size = que.size();
+            System.out.print("Min number of edges: " + level + " -> ");
+            while(size-- > 0) {
+                int rvtx = que.removeFirst();
+                if(vis[rvtx]){
+                    cycle = true;
+                    continue;
+                }
+                System.out.print(rvtx + ", ");
+                vis[rvtx] = true;
+                for(Edge e: graph[rvtx]) {
+                    if(!vis[e.v]) que.addLast(e.v);
+                }
+
+            }
+            System.out.println();
+            level++;
+        }
+        return cycle;
+    }
+
+    // O(V)
+    public static void BFS_WithoutCycle(ArrayList<Edge>[] graph, int src, boolean[] vis){
+        LinkedList<Integer> que = new LinkedList<>();
+        int level = 0;
+        que.add(src);
+        vis[src] = true;
+        while(que.size() != 0) {
+            int size = que.size();
+            System.out.print("Min number of edges: " + level + " -> ");
+            while(size-- > 0) {
+                int rvtx = que.removeFirst();
+                System.out.print(rvtx + ", ");
+                for(Edge e: graph[rvtx]) {
+                    if(!vis[e.v]) {
+                        vis[e.v] = true;
+                        que.addLast(e.v);
+                    }
+                }
+
+            }
+            System.out.println();
+            level++;
         }
     }
 
