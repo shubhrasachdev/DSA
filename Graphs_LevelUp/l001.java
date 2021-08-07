@@ -1,6 +1,6 @@
 import java.util.ArrayList;
 import java.util.LinkedList;
-
+import java.util.Arrays;
 public class l001{
     public static class Edge {
         int v = 0, w = 0;
@@ -15,6 +15,7 @@ public class l001{
         graph[v].add(new Edge(u, w));
     }
 
+    // O(2E)
     public static void display(ArrayList<Edge>[] graph) {
         int N = graph.length;
         for(int i = 0; i < N; i++){
@@ -157,6 +158,51 @@ public class l001{
             System.out.println();
             level++;
         }
+    }
+
+    // July 10, 2021
+    public static boolean isBipartite(ArrayList<Edge>[] graph, int src, int[] vis) {
+        LinkedList<Integer> que = new LinkedList<>();
+        int color = 0; // 0 - red, 1 - green
+        que.add(src);
+        boolean isBipartite = true;
+        boolean isCycle = false;
+        while(que.size() != 0) {
+            int size = que.size();
+            while(size-- > 0) {
+                int rvtx = que.removeFirst();
+                if(vis[rvtx] != -1) {
+                    isCycle = true;
+                    if(vis[rvtx] != color) {
+                        isBipartite = false;
+                        break;
+                    }
+                    continue;
+                }
+                vis[rvtx] = color;
+                for(Edge e: graph[rvtx]) {
+                    if(vis[e.v] == -1) que.addLast(e.v);
+                }
+            }
+            color = (color + 1) % 2;
+            if(isBipartite) break;
+        }
+        if(isCycle) {
+            if(isBipartite) System.out.println("Graph is bipartite and has even length cycle");
+            else System.out.println("Graph is non bipartite and has odd length cycle");
+        } else System.out.println("Graph is bipartite and has no cycle");
+        return isBipartite;
+    }
+
+    public static boolean isBipartite(ArrayList<Edge>[] graph) {
+        int N = graph.length;
+        int[] vis = new int[N];
+        Arrays.fill(vis, -1);
+        boolean res = true;
+        for(int i = 0; i < N; i++) {
+            if(vis[i] == -1) res = res && isBipartite(graph, i, vis);
+        }
+        return res;
     }
 
     public static void main(String[] args){
