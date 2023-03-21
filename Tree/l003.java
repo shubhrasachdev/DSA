@@ -1,14 +1,14 @@
 // March 8, 2021
 public class l003 {
-    public static class Node{
+    public class Node{
         int data = 0;
         Node left = null, right = null;
         Node(int data){this.data = data;}
     }
 
     
-    public static Node prev = null;
-    public static boolean isBST(Node node){
+    public Node prev = null;
+    public boolean isBST(Node node){
         if(node == null) return true;
         boolean leftRes = isBST(node.left);
         if(!leftRes) return false;
@@ -23,7 +23,7 @@ public class l003 {
 
 
     // is given tree a bst?
-    public class isBSTSolPair{
+    static class isBSTSolPair{
         int maxEle = -(int) 1e8;
         int minEle = (int) 1e8;
         boolean isBST = true;
@@ -53,12 +53,12 @@ public class l003 {
 
     // is given tree balanced?
     // balanced tree: |left.height - right.height| <= 1 for every node
-    public static class isBalPair {
+    public class isBalPair {
         int height = -1;
         boolean balanceTree = true;
     }
 
-    public static isBalPair isBal_(Node node){
+    public isBalPair isBal_(Node node){
         if(node == null) return new isBalPair();
         isBalPair left = isBal_(node.left);
         if (!left.balanceTree) return left;
@@ -75,12 +75,12 @@ public class l003 {
         return res;
     }
 
-    public static boolean isBal(Node node){
+    public boolean isBal(Node node){
         isBalPair res = isBal_(node);
         return res.balanceTree;
     }
 
-    public static isBSTSolPair allSolutions(Node node){
+    public isBSTSolPair allSolutions(Node node){
         isBSTSolPair left = allSolutions(node.left);
         isBSTSolPair right = allSolutions(node.right);
 

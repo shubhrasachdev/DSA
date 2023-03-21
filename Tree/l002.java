@@ -19,6 +19,7 @@ public class l002 {
 
     // stores nodes at k depth from a given node in an arraylist ans
     // without blocking
+    // https://practice.geeksforgeeks.org/problems/k-distance-from-root/1/#
     public static void printAtKDepth(Node root, int k, ArrayList<Integer> ans){
         if(root == null || k < 0) return;
         if(k == 0){
