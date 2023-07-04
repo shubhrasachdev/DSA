@@ -1,4 +1,5 @@
 import java.util.ArrayList;
+import java.util.List;
 import java.util.PriorityQueue;
 
 public class l001{
@@ -207,33 +208,85 @@ public class l001{
     // 1. Implement smallest path and largest path with recursion and return types
     // 2. Implement kth largest path without utilizing a DS like a PQ (max time complexity - O(kn))
 
-//
-//    public static void dfs_island(int[][] mat, int[][] dir, int i, int j){
-//        mat[i][j] = 0;
-//        for(int d = 0; d < 4; d++){
-//            int r = i + dir[d][0];
-//            int c = j + dir[d][1];
-//            if(r >= 0 && c >= 0 && r < mat.length && c < mat[0].length && mat[r][c] == 1){
-//                dfs_island(mat, dir, r, c);
-//            }
-//        }
-//    }
-//
-//    public static int numberIsland(int[][] mat){
-//        int n = mat.length;
-//        int m = mat[0].length;
-//        int[][] dir = {{1, 0}, {-1, 0}, {0, 1}, {0, -1}};
-//        int count = 0;
-//        for(int i = 0; i < n; i++){
-//            for(int j = 0; j < m; j++){
-//                if(mat[i][j] == 1){
-//                    dfs_island(mat, dir, i, j);
-//                    count++;
-//                }
-//            }
-//        }
-//        return count;
-//    }
+
+    // Like Leetcode 200: number of islands
+    // 1 = Land, 0 = water
+    public static void dfs_island(int[][] mat, int[][] dir, int i, int j){
+        mat[i][j] = 0;
+        for(int d = 0; d < 4; d++){
+            int r = i + dir[d][0];
+            int c = j + dir[d][1];
+            if(r >= 0 && c >= 0 && r < mat.length && c < mat[0].length && mat[r][c] == 1){
+                dfs_island(mat, dir, r, c);
+            }
+        }
+    }
+
+    public static int numberIsland(int[][] mat){
+        int n = mat.length;
+        int m = mat[0].length;
+        int[][] dir = {{1, 0}, {-1, 0}, {0, 1}, {0, -1}};
+        int count = 0;
+        for(int i = 0; i < n; i++){
+            for(int j = 0; j < m; j++){
+                if(mat[i][j] == 1){
+                    dfs_island(mat, dir, i, j);
+                    count++;
+                }
+            }
+        }
+        return count;
+    }
+
+    public static void hamiltonianPaths_dfs(int src, int osrc, boolean[] vis, int numEdges, String psf) {
+        if(numEdges == N - 1) { // all vertices have been visited
+            String ans = psf + src;
+            int idx = findEdge(osrc, src);
+            ans += idx == -1 ? '.' : '*';
+            System.out.println(ans);
+            return;
+        }
+        vis[src] = true;
+        for(Edge e: graph[src]) {
+            if(!vis[e.v]) hamiltonianPaths_dfs(e.v, osrc, vis, numEdges + 1, psf + src);
+        }
+        vis[src] = false;
+    }
+
+    public static void hamiltonianPaths(int src) {
+        hamiltonianPaths_dfs(src, src, new boolean[N], 0, "");
+    }
+
+    // Journey To Moon: https://www.hackerrank.com/challenges/journey-to-the-moon
+    public static int dfs_journeyToMoon(ArrayList<Integer>[] graph, int src, boolean[] vis){
+        int sz = 1;
+        vis[src] = true;
+        for(int e: graph[src]){
+            if(!vis[e]) sz += dfs_journeyToMoon(graph, e, vis);
+        }
+        return sz;
+    }
+
+    public static long journeyToMoon(int n, List<List<Integer>> astronaut){
+        ArrayList<Integer>[] graph = new ArrayList[n];
+        for(int i = 0; i < n; i++) graph[i] = new ArrayList<>();
+        for(List<Integer> pair: astronaut) {
+            graph[pair.get(0)].add(pair.get(1));
+            graph[pair.get(1)].add(pair.get(0));
+        }
+        ArrayList<Integer> numAstronauts = new ArrayList<>();
+        boolean[] vis = new boolean[n];
+        for(int i = 0; i < n; i++){
+            if(!vis[i]) numAstronauts.add(dfs_journeyToMoon(graph, i, vis));
+        }
+        long ssf = 0, res = 0;
+        for (int ele : numAstronauts) {
+            res += ele * ssf;
+            ssf += ele;
+        }
+
+        return res;
+    }
 
     public static void main(String[] args){
         for(int i = 0; i < N; i++) graph[i] = new ArrayList<>();
