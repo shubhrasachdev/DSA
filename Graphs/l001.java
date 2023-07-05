@@ -1,6 +1,4 @@
-import java.util.ArrayList;
-import java.util.List;
-import java.util.PriorityQueue;
+import java.util.*;
 
 public class l001{
     public static class Edge{
@@ -288,6 +286,135 @@ public class l001{
         return res;
     }
 
+    public static void BFS(int src, boolean[] vis) {
+        int level = 0, cycleCount = 0;
+        LinkedList<Integer> que = new LinkedList<>();
+        que.addLast(src);
+        while(!que.isEmpty()) {
+            int size = que.size();
+            System.out.print(level + " - > ");
+            while(size-- > 0) {
+                int rvtx = que.removeFirst();
+                if(vis[rvtx]) {
+                    cycleCount++;
+                    continue;
+                }
+                System.out.print(rvtx + " ");
+                vis[rvtx] = true;
+                for (Edge e: graph[rvtx]) {
+                    if(!vis[e.v]) que.addLast(e.v);
+                }
+            }
+            System.out.println();
+            level++;
+        }
+        System.out.println("cycle count: " + cycleCount);
+    }
+
+    public static void BFS_02(int src, boolean[] vis) {
+        int level = 0;
+        LinkedList<Integer> que = new LinkedList<>();
+        que.addLast(src);
+        vis[src] = true;
+        while(!que.isEmpty()) {
+            int size = que.size();
+            System.out.print(level + " - > ");
+            while(size-- > 0) {
+                int rvtx = que.removeFirst();
+                System.out.print(rvtx + " ");
+                for (Edge e: graph[rvtx]) {
+                    if(!vis[e.v]) {
+                        que.addLast(e.v);
+                        vis[e.v] = true;
+                    }
+                }
+            }
+            System.out.println();
+            level++;
+        }
+    }
+
+    public static boolean isTree() {
+        // No cycle and 1 gcc
+        return false;
+    }
+
+    public static boolean isForest() {
+        // No cycle and > 1 gcc
+        return false;
+    }
+
+    // Leetcode 785 - https://leetcode.com/problems/is-graph-bipartite
+    public boolean isBipartite(int[][] graph, int src, int[] vis) {
+        int color = 0;
+        LinkedList<Integer> que = new LinkedList<>();
+        que.addLast(src);
+        while(!que.isEmpty()) {
+            int size = que.size();
+            while(size-- > 0) {
+                int rvtx = que.removeFirst();
+                if(vis[rvtx] != -1) {
+                    if(vis[rvtx] != color) return false; // conflict
+                    continue;
+                }
+                vis[rvtx] = color;
+                for(int vtx: graph[rvtx]) {
+                    if(vis[vtx] == -1) que.addLast(vtx);
+                }
+            }
+            color = (color + 1) % 2;
+        }
+        return true;
+    }
+
+    public boolean isBipartite(int[][] graph) {
+        int n = graph.length;
+        int[] vis = new int[n]; // -1 - unvisited, 0- red, 1 - white
+        Arrays.fill(vis, -1);
+        boolean res = true;
+        for(int i = 0; i < n; i++) {
+            if(vis[i] == -1) res = res && isBipartite(graph, i, vis);
+        }
+        return res;
+    }
+
+    // Spread of Infection
+    // 1. You are given a graph, representing people and their connectivity.
+    // 2. You are also given a src person (who got infected) and time t.
+    // 3. You are required to find how many people will get infected in time t, if the infection spreads to neighbors of infected person in 1 unit of time.
+    public static int spreadOfInfection(ArrayList<Edge>[] graph, int src, int time) {
+        int count = 1;
+        LinkedList<Integer> que = new LinkedList<>();
+        boolean[] vis = new boolean[graph.length];
+        que.addLast(src);
+        vis[src] = true;
+        int currTime = 1;
+        while(!que.isEmpty()) {
+            int size = que.size();
+            while (size-- > 0) {
+                int p = que.removeFirst();
+                System.out.println("Removed " + p);
+                for(Edge e: graph[p]) {
+
+                    if(!vis[e.v]) {
+                        System.out.println("Tring to add " + e.v);
+                        que.addLast(e.v);
+                        vis[e.v] = true;
+                        count++;
+                    }
+                }
+            }
+            System.out.println("At Time  " + currTime + ": " + count);
+            currTime++;
+            if (time == currTime) {
+                System.out.println("Breaking");
+                break;
+            }
+        }
+        return count;
+    }
+
+
     public static void main(String[] args){
         for(int i = 0; i < N; i++) graph[i] = new ArrayList<>();
         addEdge(0, 1, 10);
@@ -298,13 +425,16 @@ public class l001{
         addEdge(4, 5, 3);
         addEdge(4, 6, 8);
         addEdge(5, 6, 3);
-        addEdge(2, 5, 5);
-        boolean[] vis = new boolean[N];
-        Pair p = new Pair();
-        multisolver(0, 6, vis, p, 0, "", 30, 4);
-        System.out.println(p);
-        System.out.println(pq.peek());
-
+        display();
+//        addEdge(0, 6, 16);
+//        addEdge(2, 5, 5);
+//        boolean[] vis = new boolean[N];
+//        Pair p = new Pair();
+//        multisolver(0, 6, vis, p, 0, "", 30, 4);
+//        System.out.println(p);
+//        System.out.println(pq.peek());
+//        BFS(0, vis);
+        System.out.println(spreadOfInfection(graph, 6, 3));
 
     }
 
