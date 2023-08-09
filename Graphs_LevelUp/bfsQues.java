@@ -341,36 +341,39 @@ public class bfsQues {
     // August 7, 2021
     // https://www.lintcode.com/problem/787/
     public boolean hasPath(int[][] maze, int[] start, int[] destination) {
-        int n = maze.length, m = maze[0].length;
-        int sr = start[0], sc = start[1], er = destination[0], ec = destination[1];
-        LinkedList<Integer> que = new LinkedList<>();
+        int n = maze.length;
+        int m = maze[0].length;
         boolean[][] vis = new boolean[n][m];
-        int[][] dir = {{0,1},{1,0}, {0,-1}, {-1,0}};
-        que.add(sr * m + sc);
-        vis[sr][sc] = true;
-        while(que.size() != 0) {
+        LinkedList<Integer> que = new LinkedList<>();
+        que.addLast(start[0] * m + start[1]);
+        vis[start[0]][start[1]] = true;
+        int[][] dir = {{0,1}, {1,0}, {0,-1}, {-1, 0}};
+        while(!que.isEmpty()) {
             int size = que.size();
             while(size-- > 0) {
                 int idx = que.removeFirst();
-                int i = idx / m, j = idx % m;
-                for(int[] d: dir){
-                    int r = i, c = j;
-                    while(r >= 0 && c >= 0 && r < n && c < m && maze[r][c] == 0) {
+                int sr = idx / m, sc = idx % m;
+
+                for(int[] d: dir) {
+                    int r = sr, c = sc;
+                    while(r < n && c < m && r >= 0 && c >= 0 && maze[r][c] == 0) { // this loop will exit if either border is reached or 1(wall) is encountered
                         r += d[0];
                         c += d[1];
                     }
                     r -= d[0];
                     c -= d[1];
-                    if(vis[r][c]) continue;
-                    vis[r][c] = true;
-                    que.add(r * m + c);
-                    if(er == r && ec == c) return true;
-                    
+                    if(!vis[r][c]) {
+                        if(r == destination[0] && c == destination[1]) return true;
+                        que.addLast(r * m + c);
+                        vis[r][c] = true;
+
+                    }
                 }
             }
         }
         return false;
     }
+
 
     public int shortestDistance(int[][] maze, int[] start, int[] destination) {
         class Pair {
@@ -415,6 +418,7 @@ public class bfsQues {
         }
         return dist[er][ec] == (int)1e9 ? -1 : dist[er][ec];
     }
+
 
 
 

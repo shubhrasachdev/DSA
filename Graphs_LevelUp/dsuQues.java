@@ -61,7 +61,7 @@ public class dsuQues {
         String output = "";
         for(int i = 0; i < baseStr.length(); i++) {
             int p = findPar(baseStr.charAt(i) - 'a');
-            output += (char) (p + 'a');
+            output += (char) (p + 'a') + "";
         }
         return output;
 	}

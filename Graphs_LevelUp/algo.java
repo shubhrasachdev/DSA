@@ -28,7 +28,7 @@ public class algo {
     static int[] par, size;
 
     public static int findPar(int u) {
-        return par[u] == u ? u : (par[u] = findPar(u));
+        return par[u] == u ? u : (par[u] = findPar(par[u]));
     }
 
     public static void union(int p1, int p2) {
@@ -77,7 +77,6 @@ public class algo {
     static int[] low, disc;
     static boolean[] articulation, vis;
     static int time = 0, rootCalls = 0;
-
 
     public static void dfs(ArrayList<Edge>[] graph, int src, int par) {
         disc[src] = low[src] = time++;
@@ -167,7 +166,7 @@ public class algo {
         par[src] = -1;
         while (pq.size() != 0) {
             Pair p = pq.remove();
-            if (p.wsf > dis[p.vtx]) continue;
+            if (p.wsf >= dis[p.vtx]) continue;
             for (Edge e : graph[p.vtx]) {
                 if (p.wsf + e.w < dis[e.v]) {
                     dis[e.v] = p.wsf + e.w;
