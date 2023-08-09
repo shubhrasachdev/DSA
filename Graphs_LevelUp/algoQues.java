@@ -46,26 +46,25 @@ public class algoQues {
 
     // Leetcode 787 - https://leetcode.com/problems/cheapest-flights-within-k-stops/submissions/
     // Time: k(V + E)
-    public int findCheapestPrice(int N, int[][] flights, int src, int dst, int k) {
-        int[] prev = new int[N];
-        Arrays.fill(prev, (int)1e9);
+    public int findCheapestPrice(int n, int[][] flights, int src, int dst, int k) {
+        int[] prev = new int[n];
+        Arrays.fill(prev, Integer.MAX_VALUE);
         prev[src] = 0;
-        k++;
-        for(int i = 0; i < k; i++) {
+        for(int i = 1; i <= k + 1; i++) {
             boolean anyUpdate = false;
-            int[] curr = new int[N];
-            for(int j = 0; j < N; j++) curr[j] = prev[j];
-            for(int[] e: flights) {
-                int u = e[0], v = e[1], w = e[2];
-                if(prev[u] != (int)1e9 && prev[u] + w < curr[v]) {
-                    curr[v] = prev[u] + w;
+            int[] curr = new int[n];
+            for(int j = 0; j < n; j++) curr[j] = prev[j];
+            for(int[] edge: flights) {
+                int u = edge[0], v = edge[1], w = edge[2];
+                if(prev[u] != Integer.MAX_VALUE && prev[u] + w < curr[v]) {
                     anyUpdate = true;
+                    curr[v] = prev[u] + w;
                 }
             }
-            if(!anyUpdate) break;
             prev = curr;
+            if(!anyUpdate) break;
         }
-        return prev[dst] == (int)1e9 ? -1 : prev[dst];
+        return prev[dst] == Integer.MAX_VALUE ? -1 : prev[dst];
     }
 
     // Leetcode 1334: https://leetcode.com/problems/find-the-city-with-the-smallest-number-of-neighbors-at-a-threshold-distance/

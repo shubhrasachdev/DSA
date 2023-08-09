@@ -142,6 +142,7 @@ public class dfsQues {
     // July 8, 2021
     
     // Lintcode 860 - https://www.lintcode.com/problem/number-of-distinct-islands/
+    // GFG - https://practice.geeksforgeeks.org/problems/number-of-distinct-islands/1
     public String dfs_distinctIslands(int[][] grid, int i, int j, int[][] dir, String[] dirS) {
         grid[i][j] = 2;
         String path = "";
