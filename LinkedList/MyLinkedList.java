@@ -1,5 +1,5 @@
 // Feb 24, 2020
-public class linkedlist {
+public class MyLinkedList {
     private class Node {
         private int data = 0;
         Node next = null;
@@ -20,20 +20,29 @@ public class linkedlist {
         return sizeOfLL;
     }
 
+    public Node getHead() {
+        return head;
+    }
+
+    public Node getTail() {
+        return tail;
+    }
+
     public void display(){
         Node curr = this.head;
         while(curr != null) {
-            System.out.println(curr.data +  " --> ");
+            System.out.print(curr.data +  " --> ");
             curr = curr.next;
         }
+        System.out.println();
     }
-    
+
     // Exceptions ==================================================================
     private void emptyException() throws Exception{
-        if(isEmpty()) 
+        if(isEmpty())
             throw new Exception("LinkedList is empty");
     }
-    
+
     private void checkIndex(int idx) throws Exception{
         if(idx < 0 || idx >= this.sizeOfLL)
             throw new Exception("Linked List Index out of bounds");
@@ -90,13 +99,13 @@ public class linkedlist {
     }
 
     public void addAt(int idx, int data) throws Exception {
-        checkIndexInclusive(idx); 
+        checkIndexInclusive(idx);
         Node node = new Node(data);
-        addNodeAt(idx, node);        
+        addNodeAt(idx, node);
     }
 
     // Get =========================================================================
-    
+
     public int getFirst() throws Exception{
         emptyException();
         return this.head.data;
@@ -115,7 +124,7 @@ public class linkedlist {
 
     public int getAt(int idx) throws Exception{
         checkIndex(idx);
-        Node node = getNodeAt(idx); 
+        Node node = getNodeAt(idx);
         return node.data;
     }
 
@@ -133,7 +142,7 @@ public class linkedlist {
         this.sizeOfLL--;
         return removeNode;
     }
-    
+
     public int removeFirst() throws Exception{
         emptyException();
         Node node = removeFirstNode();
@@ -180,7 +189,7 @@ public class linkedlist {
     }
 
     // Feb 26, 2020
-    
+
     // to find middle of a linked list
     // this version returns 1st mid for even length LL
     public int middleOne(){
@@ -192,7 +201,7 @@ public class linkedlist {
         }
         return slow.data;
     }
-    
+
     // this version returns 2nd mid for even length LL
     public int middleTwo(){
         Node fast = this.head;
@@ -272,10 +281,10 @@ public class linkedlist {
         }
         return slow.data;
     }
-    
+
     // merge two sorted linked lists
-    public static linkedlist mergeTwoSortedLists(linkedlist l1, linkedlist l2) {
-        linkedlist result = new linkedlist();
+    public static MyLinkedList mergeTwoSortedLists(MyLinkedList l1, MyLinkedList l2) {
+        MyLinkedList result = new MyLinkedList();
         Node one = l1.head, two = l2.head;
         while(one != null && two != null){
             if(one.data < two.data){
@@ -315,14 +324,14 @@ public class linkedlist {
     size of lists and manage carry where required. 
     
     */
-    
+
     // Method 1 - Reverse is allowed, iterative solution
-    public static linkedlist addTwoLists1(linkedlist one, linkedlist two){
+    public static MyLinkedList addTwoLists1(MyLinkedList one, MyLinkedList two){
         one.reversePI();
         two.reversePI();
         int carry = 0;
         Node c1 = one.head, c2 = two.head;
-        linkedlist ans = new linkedlist();
+        MyLinkedList ans = new MyLinkedList();
         while(c1 != null || c2 != null || carry != 0){
             int sum = (c1 != null ? c1.data : 0) + (c2 != null ? c2.data : 0) + carry;
             carry = sum / 10;
@@ -330,7 +339,7 @@ public class linkedlist {
             ans.addFirst(sum);
             if(c1 != null) c1 = c1.next;
             if(c2 != null) c2 = c2.next;
-            
+
         }
         one.reversePI();
         two.reversePI();
@@ -338,7 +347,7 @@ public class linkedlist {
     }
 
     // Method 2 - Reverse is not allowed, recursive solution
-    private static int addTwoListsHelper(Node one, int p, Node two, int q, linkedlist res){
+    private static int addTwoListsHelper(Node one, int p, Node two, int q, MyLinkedList res){
         int sum = 0;
         if(one == null && two == null) return sum;
         if(p > q){
@@ -357,14 +366,14 @@ public class linkedlist {
         return carry;
     }
 
-    public static linkedlist addTwoLists2(linkedlist one, linkedlist two) {
-        linkedlist res = new linkedlist();
+    public static MyLinkedList addTwoLists2(MyLinkedList one, MyLinkedList two) {
+        MyLinkedList res = new MyLinkedList();
         int carry = addTwoListsHelper(one.head, one.size(), two.head, two.size(), res);
         if(carry > 0) res.addFirst(carry);
         return res;
     }
 
-    
+
     // The function is expected to return a new sorted list. The original list must not change.
     public static Node middle(Node h, Node t){
         Node f = h;
@@ -373,27 +382,27 @@ public class linkedlist {
             f = f.next.next;
             s = s.next;
         }
-      return s;
+        return s;
     }
 
     // my method - merge sort LL
-    public static linkedlist mergeSort(Node head, Node tail){
-      if(head == tail){
-          linkedlist base = new linkedlist();
-          base.addLast(head.data);
-          return base;
-      }
-      Node mid = middle(head, tail);
-      linkedlist first = mergeSort(head, mid);
-      linkedlist second = mergeSort(mid.next, tail);
-      linkedlist res = mergeTwoSortedLists(first, second);
-      return res;
+    public static MyLinkedList mergeSort(Node head, Node tail){
+        if(head == tail){
+            MyLinkedList base = new MyLinkedList();
+            base.addLast(head.data);
+            return base;
+        }
+        Node mid = middle(head, tail);
+        MyLinkedList first = mergeSort(head, mid);
+        MyLinkedList second = mergeSort(mid.next, tail);
+        MyLinkedList res = mergeTwoSortedLists(first, second);
+        return res;
     }
 
     // sir's method - merge sort LL
-    public static linkedlist mergeSort2(Node head, Node tail){
+    public static MyLinkedList mergeSort2(Node head, Node tail){
         if(head == tail){
-            linkedlist base = new linkedlist();
+            MyLinkedList base = new MyLinkedList();
             base.addLast(head.data);
             return base;
         }
@@ -403,11 +412,23 @@ public class linkedlist {
         Node head2 = mid.next;
         Node tail2 = tail;
         mid.next = null;
-        linkedlist first = mergeSort2(head1, tail1);
-        linkedlist second = mergeSort2(head2, tail2);
+        MyLinkedList first = mergeSort2(head1, tail1);
+        MyLinkedList second = mergeSort2(head2, tail2);
         mid.next = head2;
-        linkedlist res = mergeTwoSortedLists(first, second);
+        MyLinkedList res = mergeTwoSortedLists(first, second);
         return res;
+    }
+
+    public static void main(String[] args) {
+        MyLinkedList ll = new MyLinkedList();
+        ll.addLast(-1);
+        ll.addLast(5);
+        ll.addLast(3);
+        ll.addLast(4);
+        ll.addLast(0);
+        MyLinkedList res = mergeSort2(ll.getHead(), ll.getTail());
+        res.display();
+
     }
 
 }
